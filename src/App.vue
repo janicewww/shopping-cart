@@ -1,28 +1,48 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="app-container">
+    <Header title="Shopping Cart"></Header>
+    <Goods v-for="item in list" :key="item.id" :title="item.goods_name" :pic="item.goods_img" :price="item.goods_price"></Goods>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import axios from 'axios'
+import Header from '@/components/Header/Header.vue'
+import Goods from '@/components/Goods/Goods.vue'
 
 export default {
-  name: 'App',
+
+  data() {
+    return {
+      // 用來存 Shopping Cart 數據
+      list: []
+    }
+  },
+
+  created() {
+    this.initCartList()
+  },
+
+  methods: {
+    async initCartList() {
+      const { data: res } = await axios.get('https://www.escook.cn/api/cart')
+      if(res.status === 200) {
+        this.list = res.list
+      }
+    }
+  },
+
   components: {
-    HelloWorld
+    Header,
+    Goods
   }
+
 }
 </script>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="less" scoped>
+.app-container {
+  padding-bottom: 55px;
 }
+
 </style>
